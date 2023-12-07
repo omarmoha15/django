@@ -1,0 +1,349 @@
+{% extends 'components/layouts/default.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel='stylesheet' type='text/css' href='{% static 'assets/css/nice-select2.css' %}'>
+<script defer src="{% static 'assets/js/apexcharts.js' %}"></script>
+<link rel="stylesheet" href="{% static 'assets/css/flatpickr.min.css' %}">
+<script src="{% static 'assets/js/flatpickr.js' %}"></script>
+<link rel="stylesheet" href="{% static 'assets/css/nouislider.min.css' %}">
+<script src="{% static 'assets/js/nouislider.min.js' %}"></script>
+<div  x-data="form">
+    <ul class="flex space-x-2 rtl:space-x-reverse">
+        <li>
+            <a href="javascript:;" class="text-primary hover:underline">الاجازات</a>
+        </li>
+        <li class="before:content-['/'] before:mr-1 rtl:before:ml-1">
+            <span>طلبات الاجازه</span>
+        </li>
+    </ul>
+    <div class="pt-5 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <div class="mb-5">
+            <h5 class="font-semibold text-lg dark:text-white-light mb-10">تقديم طلب اجازة لموظف</h5>
+            <form class="space-y-5">
+
+
+                <div class="mb-5">
+                <label for="ctnFile">رقم الهوية </label>
+                <input type="text" placeholder="Some Text..." class="form-input" required />
+            </div>
+               
+                
+                <div class="mb-5">
+                    <label for="ctnFile">نوع الاجازة</label>
+                    <select class="selectize" >
+                        <option disabled selected value="">اختار نوع الاجازة</option>
+                        <option selected value="orange">اجازة اعتيادية</option>
+                        <option selected value="orange"> اجازة اعتيادية اقل من خمسه ايام </option>
+                        <option value="White"> اجازة مرضية</option>
+                        <option value="Purple">امومه</option>
+                    </select>
+            </div>
+
+           
+
+    
+        <div class="mb-5">
+            <label for="ctnFile">تاريخ البداية</label>
+            <input id="basic" x-model="date1" class="form-input" />
+        </div>
+       
+            <div class="mb-5">
+                <label for="ctnFile">تاريخ النهاية</label>
+                <input id="basic" x-model="date1" class="form-input" />
+            </div>
+           
+      
+                
+                
+                
+                <div>
+                    <label for="ctnFile">مرفق الاجازة</label>
+                    <input id="ctnFile" type="file" class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file-ml-5 file:text-white file:hover:bg-primary" required />
+                </div>
+                <div class="mb-5">
+                    <label for="ctnFile">القائم بالعمل اثناء الاجازة</label>
+                    <select class="selectize">
+                        <option disabled selected value="">اختار القائم بالعمل اثناء الاجازة</option>
+                            <option selected value="orange"> الموظف 1</option>
+                            <option selected value="orange"> الموظف 2</option>
+                            <option selected value="orange">3 الموظف</option>
+                            <option selected value="orange"> الموظف 4</option>
+                    </select>
+            </div>
+    
+                <button type="submit" class="btn btn-primary !mt-6">تأكيد الطلب </button>
+            </form>
+        </div>
+
+    </div>  
+   
+</div>
+<link rel="stylesheet" href="{% static 'assets/css/highlight.min.css' %}">
+<script src="{% static 'assets/js/highlight.min.js' %}"></script>
+<script src="{% static 'assets/js/nice-select2.js' %}"></script>
+<script>
+    document.addEventListener("alpine:init", () => {
+        Alpine.data("form", () => ({
+            date1: '2022-07-05',
+            date2: '2022-07-05 12:00',
+            date3: '2022-07-05 to 2022-07-10',
+            date4: '13:45',
+            slider1: '0',
+            slider2: '0',
+            slider3: '0',
+            slider4: '0',
+            nouiMin1: 20,
+            nouiMax1: 40,
+            nouiMin2: 500,
+            nouiMax2: 4000,
+            nouiMin2Perc: 0,
+            nouiMax2Perc: 0,
+            lockedState: false,
+            init() {
+                this.initDatePicker();
+                // nouislider 1
+                noUiSlider1 = noUiSlider.create(document.getElementById('noui_slider1'), {
+                    start: [this.nouiMin1, this.nouiMax1],
+                    connect: true,
+                    tooltips: true,
+                    range: {
+                        'min': 0,
+                        'max': 100
+                    },
+                    direction: this.$store.app.rtlClass === "rtl" ? 'rtl' : 'ltr'
+                })
+                this.$nextTick(() => {
+                    document.getElementById('select').value = this.nouiMin1;
+                })
+
+                noUiSlider1.on('update', function(values, handle) {
+                    document.getElementById('select').value = Math.round(noUiSlider1.get()[
+                        0]);
+                    document.getElementById('input').value = Math.round(noUiSlider1.get()[
+                        1]);
+                });
+
+                // noui slider 2
+                noUiSlider2 = noUiSlider.create(document.getElementById('noui_slider2'), {
+                    start: [this.nouiMin2, this.nouiMax2],
+                    connect: true,
+                    tooltips: true,
+                    range: {
+                        'min': 0,
+                        'max': 10000,
+                        '10%': [500, 500],
+                        '50%': [4000, 1000],
+                    },
+                    direction: this.$store.app.rtlClass === "rtl" ? 'rtl' : 'ltr'
+                })
+                noUiSlider2.on('update', function(values, handle, unencoded, isTap, positions) {
+                    document.getElementById('nouiMin2').innerHTML = parseInt(values[0])
+                        .toFixed(2);
+                    document.getElementById('nouiMax2').innerHTML = parseInt(values[1])
+                        .toFixed(2);
+                    document.getElementById('nouiMin2Perc').innerHTML = parseInt(positions[
+                        0]).toFixed(2) + '%';
+                    document.getElementById('nouiMax2Perc').innerHTML = parseInt(positions[
+                        1]).toFixed(2) + '%';
+                });
+
+                // locking slider
+                lockButton = document.getElementById('lockbutton');
+                // locking slider1
+                lockingSlider1 = noUiSlider.create(document.getElementById('locking_slider1'), {
+                    start: 60,
+                    animate: false,
+                    range: {
+                        min: 0,
+                        max: 100
+                    },
+                    direction: this.$store.app.rtlClass === "rtl" ? 'rtl' : 'ltr'
+                });
+
+                // locking slider2
+                lockingSlider2 = noUiSlider.create(document.getElementById('locking_slider2'), {
+                    start: 80,
+                    animate: false,
+                    range: {
+                        min: 0,
+                        max: 100
+                    },
+                    direction: this.$store.app.rtlClass === "rtl" ? 'rtl' : 'ltr'
+                });
+
+                lockingSlider1.on('update', function(values, handle) {
+                    locking_slider1_value.innerHTML = values[handle];
+                });
+
+                lockingSlider2.on('update', function(values, handle) {
+                    locking_slider2_value.innerHTML = values[handle];
+                });
+
+                this.$nextTick(() => {
+                    let lockedState = this.lockedState
+                    this.$watch('lockedState', value => {
+                        lockedState = value
+                    })
+                    lockingSlider1.on('slide', function(values, handle) {
+                        if (!lockedState) return;
+                        lockingSlider2.set(values[handle] - (Number(lockingSlider2
+                            .get()) - Number(lockingSlider1.get())));
+                    });
+
+                    lockingSlider2.on('slide', function(values, handle) {
+                        if (!lockedState) return;
+                        lockingSlider1.set(values[handle] - (Number(lockingSlider2
+                            .get()) - Number(lockingSlider1.get())));
+                    });
+                })
+
+                this.$watch('$store.app.rtlClass', () => {
+                    this.initDatePicker();
+                });
+            },
+
+            initDatePicker() {
+                // basic
+                flatpickr(document.getElementById('basic'), {
+                    dateFormat: 'Y-m-d',
+                    defaultDate: this.date1,
+                    position: this.$store.app.rtlClass === 'rtl' ? 'auto right' : 'auto left'
+                })
+                // date-time
+                flatpickr(document.getElementById('dateTime'), {
+                    defaultDate: this.date2,
+                    enableTime: true,
+                    dateFormat: 'Y-m-d H:i',
+                    position: this.$store.app.rtlClass === 'rtl' ? 'auto right' : 'auto left'
+                })
+                // range calendar
+                flatpickr(document.getElementById('range-calendar'), {
+                    defaultDate: this.date3,
+                    dateFormat: 'Y-m-d',
+                    mode: 'range',
+                    position: this.$store.app.rtlClass === 'rtl' ? 'auto right' : 'auto left'
+                })
+                // Preloading time
+                flatpickr(document.getElementById('preloading-time'), {
+                    defaultDate: this.date4,
+                    noCalendar: true,
+                    enableTime: true,
+                    dateFormat: 'H:i',
+                    position: this.$store.app.rtlClass === 'rtl' ? 'auto right' : 'auto left'
+                })
+            },
+
+            selectUpdateValue() {
+                noUiSlider1.set([this.nouiMin1, this.nouiMax1]);
+            },
+
+            // highlightjs
+            codeArr: [],
+            toggleCode(name) {
+                if (this.codeArr.includes(name)) {
+                    this.codeArr = this.codeArr.filter((d) => d != name);
+                } else {
+                    this.codeArr.push(name);
+
+                    setTimeout(() => {
+                        document.querySelectorAll('pre.code').forEach(el => {
+                            hljs.highlightElement(el);
+                        });
+                    });
+                }
+            }
+        }));
+    });
+    
+    document.addEventListener("DOMContentLoaded", function(e) {
+        // default
+        var els = document.querySelectorAll(".selectize");
+        els.forEach(function(select) {
+            NiceSelect.bind(select);
+        });
+
+        // seachable
+        var options = {
+            searchable: true
+        };
+        NiceSelect.bind(document.getElementById("seachable-select"), options);
+    });
+
+    document.addEventListener("alpine:init", () => {
+        Alpine.data("form", () => ({
+
+            // highlightjs
+            codeArr: [],
+            toggleCode(name) {
+                if (this.codeArr.includes(name)) {
+                    this.codeArr = this.codeArr.filter((d) => d != name);
+                } else {
+                    this.codeArr.push(name);
+
+                    setTimeout(() => {
+                        document.querySelectorAll('pre.code').forEach(el => {
+                            hljs.highlightElement(el);
+                        });
+                    });
+                }
+            }
+        }));
+    });
+    document.addEventListener("alpine:init", () => {
+            Alpine.data("form", () => ({
+                date1: '2022-07-05',
+                init() {
+                    flatpickr(document.getElementById('basic'), {
+                        dateFormat: 'Y-m-d',
+                        defaultDate: this.date1,
+                    })
+                }
+            }));
+        });
+</script>
+<style>
+    /* range picker */
+    input[type=range] {
+        -webkit-appearance: none;
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 8px;
+        background: #dee2e6;
+        border: none;
+        border-radius: 3px;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        border: none;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background: #4361ee;
+        margin-top: -4px;
+    }
+
+    .dark input[type=range]::-webkit-slider-runnable-track {
+        background: #1b2e4b;
+    }
+
+    .dark input[type=range] {
+        background-color: transparent;
+    }
+
+    input[type=range]:focus {
+        outline: none;
+    }
+
+    input[type=range]:active::-webkit-slider-thumb {
+        background: #4361eec2;
+        cursor: pointer;
+    }
+</style>
+
+{% endblock %}

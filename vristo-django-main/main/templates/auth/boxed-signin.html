@@ -1,0 +1,32 @@
+{% extends 'components/layouts/auth.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="bg-green-950 flex justify-center items-center min-h-screen ">
+    <div class="panel sm:w-[480px] m-6 max-w-lg w-full rounded-3xl">
+        <h2 class="font-bold text-2xl mb-3">تسجيل الدخول </h2>
+        <p class="mb-7">ادخل رقم الهوية وكلمة المرور لتسجيل الدخول </p>
+        <form class="space-y-5" @submit.prevent="window.location='/'">
+            <div>
+                <label for="id">رقم الهوية</label>
+                <input id="id" type="id" class="form-input" placeholder="ادخل رقم الهوية" />
+            </div>
+            <div>
+                <label for="password">كلمة المرور</label>
+                <input id="password" type="password" class="form-input" placeholder="ادخل كلمة المرور" />
+            </div>
+           
+            <button type="submit" class="btn btn-primary w-full">تأكيد</button>
+        </form>
+        <div class="relative my-7 h-5 text-center before:w-full before:h-[1px] before:absolute before:inset-0 before:m-auto before:bg-[#ebedf2] dark:before:bg-[#253b5c]">
+            <div class="font-bold text-white-dark bg-white dark:bg-[#0e1726] px-2 relative z-[1] inline-block">
+               
+            </div>
+        </div>
+       
+        <p class="text-center">ليس لديك حساب  ? <a href="/auth/boxed-signup" class="text-primary font-bold hover:underline">انشاء حساب </a></p>
+    </div>
+</div>
+
+{% endblock %}
